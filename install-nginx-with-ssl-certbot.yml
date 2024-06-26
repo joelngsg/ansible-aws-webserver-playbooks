@@ -20,12 +20,16 @@
         src: templates/nginx-http.j2
         dest: /etc/nginx/sites-enabled/{{ item }}.http
       loop: "{{ domain_names }}"
+      loop_control:
+        loop_var: domain_name
 
     - name: create websever domain folders
       file:
         name: /var/www/"{{ item }}"
         state: directory
       loop: "{{ domain_names }}"
+      loop_control:
+        loop_var: domain_name
 
     - name: Restart nginx
       service:
