@@ -48,7 +48,7 @@
             dest: /usr/bin/certbot
 
         - name: Run certbot to create certs and enable on nginx
-          command: certbot --agree-tos --email {{ email }} --nginx -n -d {{ domain_names | join(' -d ') }}
+          command: certbot --agree-tos --email {{ email }} --nginx -n -d {{ domain_names | join(' -d ') }} --expand
         
         - name: Restart nginx
           service:
