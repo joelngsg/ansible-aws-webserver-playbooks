@@ -18,14 +18,14 @@
     - name: Install nginx site for letsencrypt requests
       template:
         src: templates/nginx-http.j2
-        dest: /etc/nginx/sites-enabled/{{ item }}.http
+        dest: /etc/nginx/sites-enabled/{{ domain_name }}.http
       loop: "{{ domain_names }}"
       loop_control:
         loop_var: domain_name
 
     - name: create websever domain folders
       file:
-        name: /var/www/"{{ item }}"
+        name: /var/www/"{{ domain_name }}"
         state: directory
       loop: "{{ domain_names }}"
       loop_control:
