@@ -1,0 +1,55 @@
+---
+- name: Installs nginx web server and uses certbot to install ssl cert
+  hosts: all
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+    
+    - name: Remove default nginx config
+      file: name=/etc/nginx/sites-enabled/default state=absent
+
+    - name: Install system nginx config
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+
+    - name: Install nginx site for letsencrypt requests
+      template:
+        src: templates/nginx-http.j2
+        dest: /etc/nginx/sites-enabled/{{ item }}.http
+      loop: domain_names
+
+    - name: create websever domain folders
+      file:
+        name: /var/www/"{{ item }}"
+        state: directory
+      loop: domain_names
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: Installs certbot and uses it to create an SSL and enabled https
+      block:
+        - name: Install certbot
+          command: snap install --classic certbot
+
+        - name: Prepare the certbot command
+          file:
+            state: link
+            src: /snap/bin/certbot
+            dest: /usr/bin/certbot
+
+        - name: Run certbot to create certs and enable on nginx
+          command: certbot --nginx -n -d {{ domain_names | join(' -d ') }}
+        
+        - name: Restart nginx
+          service:
+            name: nginx
+            state: restarted
+
+
+            
