@@ -7,25 +7,25 @@
         name: nginx
         state: latest
     
-    - name: Remove default nginx config
-      file: name=/etc/nginx/sites-enabled/default state=absent
+    # - name: Remove default nginx config
+    #   file: name=/etc/nginx/sites-enabled/default state=absent
 
-    - name: Install system nginx config
-      template:
-        src: templates/nginx.conf.j2
-        dest: /etc/nginx/nginx.conf
+    # - name: Install system nginx config
+    #   template:
+    #     src: templates/nginx.conf.j2
+    #     dest: /etc/nginx/nginx.conf
 
-    - name: Install nginx site for letsencrypt requests
-      template:
-        src: templates/nginx-http.j2
-        dest: /etc/nginx/sites-enabled/{{ domain_name }}.http
-      loop: "{{ domain_names }}"
-      loop_control:
-        loop_var: domain_name
+    # - name: Install nginx site for letsencrypt requests
+    #   template:
+    #     src: templates/nginx-http.j2
+    #     dest: /etc/nginx/sites-enabled/{{ domain_name }}.http
+    #   loop: "{{ domain_names }}"
+    #   loop_control:
+    #     loop_var: domain_name
 
     - name: create websever domain folders
       file:
-        name: /var/www/"{{ domain_name }}"
+        name: /var/www/{{ domain_name }}
         state: directory
       loop: "{{ domain_names }}"
       loop_control:
