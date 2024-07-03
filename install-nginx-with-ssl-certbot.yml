@@ -47,12 +47,12 @@
             src: /snap/bin/certbot
             dest: /usr/bin/certbot
         
-        - name: testing map regex filter 
-          debug:
-            msg: "{{ domain_names | map('regex_replace', '^(.*)$', '-w /var/www/\\1 -d \\1') | join(' ') }}"
+        - name: Create formatted domain and web root folders 
+          set_fact:
+            formatted_domains_and_webroot_folders: "{{ domain_names | map('regex_replace', '^(.*)$', '-w /var/www/\\1 -d \\1') | join(' ') }}"
 
         - name: Run certbot to create certs and enable on nginx
-          command: certbot --agree-tos --email {{ email }} --nginx -n {{ domain_names | map('regex_replace', '^(.*)$', '-w /var/www/\\1 -d \\1') | join(' ') }} --expand
+          command: certbot --agree-tos --email {{ email }} --nginx -n {{ formatted_domains_and_webroot_folders }} --expand
         
         - name: Restart nginx
           service:
