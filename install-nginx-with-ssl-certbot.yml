@@ -52,7 +52,7 @@
             formatted_domains_and_webroot_folders: "{{ domain_names | map('regex_replace', '^(.*)$', '-w /var/www/\\1 -d \\1') | join(' ') }}"
 
         - name: Run certbot to create certs and enable on nginx
-          command: certbot --agree-tos --email {{ email }} --nginx -n {{ formatted_domains_and_webroot_folders }} --expand
+          command: certbot --agree-tos --email {{ email }} --nginx -n --webroot {{ formatted_domains_and_webroot_folders }} --expand
         
         - name: Restart nginx
           service:
